@@ -23,3 +23,11 @@ def dateCompare(targetTimeStr) -> bool:
         return True
     else:
         return False
+
+
+def listPartition(targetList:list, number:int)->list:
+    ansList = []
+    for i in range(0,len(targetList), number):
+        ansList.append(targetList[i:i + number])
+
+    return ansList

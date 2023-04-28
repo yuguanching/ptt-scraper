@@ -1,6 +1,7 @@
 import pandas as pd
 import os
 import traceback
+import configSetting
 
 from datetime import datetime
 
@@ -9,6 +10,7 @@ def pdToExcel(des, df: pd.DataFrame, sheetName, mode='w', autoFitIsNeed=True, in
 
     file_dir = os.path.dirname(os.path.realpath('__file__'))
     filename = os.path.join(file_dir, des)
+    excel_engine = "openpyxl"
 
     # product csv file
     filename_csv = filename.replace(".xlsx", "_" + sheetName + ".csv")
@@ -16,28 +18,24 @@ def pdToExcel(des, df: pd.DataFrame, sheetName, mode='w', autoFitIsNeed=True, in
 
     if indexIsNeed is True:
         if mode == "w":
-            with pd.ExcelWriter(filename, mode=mode, engine='openpyxl') as writer:
+            with pd.ExcelWriter(filename, mode=mode, engine=excel_engine) as writer:
                 df.to_excel(writer,
-                            encoding='utf_8_sig',
                             index_label='id',
                             sheet_name=sheetName)
         else:
-            with pd.ExcelWriter(filename, mode=mode, engine='openpyxl', if_sheet_exists="replace") as writer:
+            with pd.ExcelWriter(filename, mode=mode, engine=excel_engine, if_sheet_exists="replace") as writer:
                 df.to_excel(writer,
-                            encoding='utf_8_sig',
                             index_label='id',
                             sheet_name=sheetName)
     else:
         if mode == "w":
-            with pd.ExcelWriter(filename, mode=mode, engine='openpyxl') as writer:
+            with pd.ExcelWriter(filename, mode=mode, engine=excel_engine) as writer:
                 df.to_excel(writer,
-                            encoding='utf_8_sig',
                             index=False,
                             sheet_name=sheetName)
         else:
-            with pd.ExcelWriter(filename, mode=mode, engine='openpyxl', if_sheet_exists="replace") as writer:
+            with pd.ExcelWriter(filename, mode=mode, engine=excel_engine, if_sheet_exists="replace") as writer:
                 df.to_excel(writer,
-                            encoding='utf_8_sig',
                             index=False,
                             sheet_name=sheetName)
 

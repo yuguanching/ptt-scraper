@@ -1,18 +1,20 @@
-# from gevent import monkey
-# # monkey.patch_all()
+import configSetting
+if configSetting.os_type == "mac":
+    from gevent import monkey
+    monkey.patch_all()
 import grequests
 from tool import Auxiliary
 from ioService import parser
 from scraper import auther, common
 from pprint import pprint
-from playwright.sync_api import sync_playwright
-import configSetting
+from webManager import customPlayWright
 
 
 target_urls = configSetting.json_array_data["targetURL"]
 target_names = configSetting.json_array_data["targetName"]
 auther_data_scraper = auther.auther()
 autherBuilder = parser.autherDataBuilder()
+
 
 for target_url, target_name in zip(target_urls, target_names):
 
@@ -28,16 +30,14 @@ for target_url, target_name in zip(target_urls, target_names):
 
     overview_data = dict()
 
-    with sync_playwright() as p:
-        for browser_type in [p.chromium]:
-            browser = browser_type.launch(headless=configSetting.playwirght_headless)
 
-            overview_data = auther_data_scraper.parseOverviewData(targetPage=target_url, browser=browser)
-            comments_all_pages = auther_data_scraper.checkPages("留言", targetPage=overview_data["comments"]["subpage_link"], browser=browser)
-            nickname_all_pages = auther_data_scraper.checkPages("暱稱", targetPage=overview_data["nickname"]["subpage_link"], browser=browser)
-            posts_all_pages = auther_data_scraper.checkPages("發文", targetPage=overview_data["posts"]["subpage_link"], browser=browser)
-            browser.close()
 
+    overview_data = auther_data_scraper.parseOverviewData(targetPage=target_url)
+    comments_all_pages = auther_data_scraper.checkPages("留言", targetPage=overview_data["comments"]["subpage_link"])
+    nickname_all_pages = auther_data_scraper.checkPages("暱稱", targetPage=overview_data["nickname"]["subpage_link"])
+    posts_all_pages = auther_data_scraper.checkPages("發文", targetPage=overview_data["posts"]["subpage_link"])
+    customPlayWright.browser_manager.closeBrowser()
+    
     # 發文
     posts_pages_responses = common.grequestFetchHTML(posts_all_pages)
     for resp in posts_pages_responses:
