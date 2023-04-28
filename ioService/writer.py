@@ -16,9 +16,9 @@ def pdToExcel(des, df: pd.DataFrame, sheetName, mode='w', autoFitIsNeed=True, in
 
     if indexIsNeed is True:
         if mode == "w":
-            with pd.ExcelWriter(filename, mode=mode, engine='xlsxwriter') as writer:
+            with pd.ExcelWriter(filename, mode=mode, engine='openpyxl') as writer:
                 df.to_excel(writer,
-                            # encoding='utf_8_sig',
+                            encoding='utf_8_sig',
                             index_label='id',
                             sheet_name=sheetName)
         else:
@@ -40,7 +40,6 @@ def pdToExcel(des, df: pd.DataFrame, sheetName, mode='w', autoFitIsNeed=True, in
                             encoding='utf_8_sig',
                             index=False,
                             sheet_name=sheetName)
-
 
         # for column in df:
         #     print(column)
